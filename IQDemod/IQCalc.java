@@ -24,6 +24,7 @@ public class IQCalc
     private double[] paDerivs;
 
     private double sampleRate;
+    private double bandwidth;
 
     /**
      * Constructor for objects of class IQCalc
@@ -61,11 +62,12 @@ public class IQCalc
         }
     }
 
-    public void demodulate()
+    public void demodulate(double bwidth)
     {
-        //250KHz  bandwidth
-        //I = decimate(I, sampleRate/2.5e6);
-        //Q = decimate(Q, sampleRate/2.5e6);
+        //bandwidth
+        this.bandwidth = bwidth;
+        I = decimate(I, sampleRate/bandwidth);
+        Q = decimate(Q, sampleRate/bandwidth);
 
         phaseAngles = new double[I.length];
         //calculate each phase angle
@@ -125,7 +127,7 @@ public class IQCalc
         }
         return downSampledArr;
     }
-        
+
     public byte[] doubleCastByte(double[] doubles)
     {
         byte[] bytes = new byte[doubles.length];
@@ -136,49 +138,40 @@ public class IQCalc
         return bytes;
     }
 
-    public double[] upscale(double[] doubles)
+    public double[] upscale(double[] doubles, double factor)
     {
         double[] upscaled = new double[doubles.length];
         for(int i = 0; i<doubles.length; i++)
         {
-            upscaled[i] = doubles[i]*64;
+            upscaled[i] = doubles[i]*factor;
         }
         return upscaled;
     }
+
+    public double[] smooth(double[] doubles, int smoothing ){
+        double value = doubles[0]; // start with the first input
+        for (int i=1 ; i<doubles.length; i++){
+            double currentValue = doubles[i];
+            value += (currentValue - value) / smoothing;
+            doubles[i] = value;
+        }
+        return doubles;
+    }
+    
     public void play()
     {
         try {
             // select audio format parameters
-            AudioFormat af = new AudioFormat(44100, 8, 1, true, false);
+            AudioFormat af = new AudioFormat(96000, 8, 1, true, false);
             DataLine.Info info = new DataLine.Info(SourceDataLine.class, af);
             SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
 
-            byte[] buffer = doubleCastByte(upscale(decimate(paDerivs, sampleRate/44100)));
+            byte[] buffer = doubleCastByte(upscale(smooth(decimate(paDerivs, bandwidth/96000), 30), 64));
 
-            for(int i = 0; i< 10; i++)
-            {
-                System.out.println(buffer[i]);
-            }
-            // generate some PCM data (a sine wave for simplicity)
-            /*byte[] buffer = new byte[64];
-            double step = Math.PI / buffer.length;
-            double angle = Math.PI * 2;
-            int i = buffer.length;
-            while (i > 0) {
-            double sine = Math.sin(angle);
-            int sample = (int) Math.round(sine * 32767);
-            buffer[--i] = (byte) (sample >> 8);
-            buffer[--i] = (byte) sample;
-            angle -= step;
-            }
-             */
             // prepare audio output
             line.open(af, 4096);
             line.start();
-            // output wave form repeatedly
-            /*for (int n=0; n<500; ++n) {
-            line.write(buffer, 0, buffer.length);
-            }*/
+            // output sound
             line.write(buffer, 0, buffer.length);
             // shut down audio
             line.drain();
@@ -202,9 +195,9 @@ public class IQCalc
     public static void main(String[] args)
     {
         IQCalc calc = new IQCalc(0.25e6);
-        calc.readIQFile("capture.bin");
+        calc.readIQFile("95.9_0.25e6_capture.bin");
         System.out.println(calc.getIntList().size());
-        calc.demodulate();
+        calc.demodulate(0.23e6);
 
         calc.show();
     }

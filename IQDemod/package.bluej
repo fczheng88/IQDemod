@@ -1,10 +1,10 @@
 #BlueJ package file
-objectbench.height=96
+objectbench.height=100
 objectbench.width=658
 package.editor.height=404
-package.editor.width=560
-package.editor.x=87
-package.editor.y=140
+package.editor.width=865
+package.editor.x=127
+package.editor.y=134
 package.numDependencies=0
 package.numTargets=1
 package.showExtends=true
@@ -13,7 +13,7 @@ project.charset=UTF-8
 target1.editor.height=700
 target1.editor.width=900
 target1.editor.x=194
-target1.editor.y=34
+target1.editor.y=35
 target1.height=50
 target1.name=IQCalc
 target1.naviview.expanded=false

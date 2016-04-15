@@ -1,4 +1,5 @@
 import java.io.*;
+import java.nio.*;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -6,6 +7,7 @@ import javax.swing.*;
 import java.awt.event.*;
 import java.awt.*;
 import java.util.*;
+import javax.sound.sampled.*;
 /**
  * Write a description of class IQCalc here.
  * 
@@ -22,8 +24,6 @@ public class IQCalc
     private double[] paDerivs;
 
     private double sampleRate;
-
-    
 
     /**
      * Constructor for objects of class IQCalc
@@ -63,9 +63,10 @@ public class IQCalc
 
     public void demodulate()
     {
+        //250KHz  bandwidth
         //I = decimate(I, sampleRate/2.5e6);
         //Q = decimate(Q, sampleRate/2.5e6);
-        
+
         phaseAngles = new double[I.length];
         //calculate each phase angle
         for(int i = 0; i < phaseAngles.length; i++)
@@ -79,11 +80,6 @@ public class IQCalc
         for(int i = 1; i < phaseAngles.length; i++)
         {
             paDerivs[i-1]=phaseAngles[i]-phaseAngles[i-1];
-        }
-        for(int i = 0; i< 10; i++)
-        {
-            System.out.print(phaseAngles[i]+" "+phaseAngles[i+1]+" ");
-            System.out.println(paDerivs[i]);
         }
     }
 
@@ -119,6 +115,7 @@ public class IQCalc
         }
         return downSampledArr;
     }
+
     public int[] decimate(int[] arr, double factor)
     {
         int[] downSampledArr = new int[(int)(arr.length/factor)];
@@ -128,9 +125,68 @@ public class IQCalc
         }
         return downSampledArr;
     }
-    
+        
+    public byte[] doubleCastByte(double[] doubles)
+    {
+        byte[] bytes = new byte[doubles.length];
+        for(int i = 0; i< doubles.length; i++)
+        {
+            bytes[i] = (byte)doubles[i];
+        }
+        return bytes;
+    }
+
+    public double[] upscale(double[] doubles)
+    {
+        double[] upscaled = new double[doubles.length];
+        for(int i = 0; i<doubles.length; i++)
+        {
+            upscaled[i] = doubles[i]*64;
+        }
+        return upscaled;
+    }
     public void play()
     {
+        try {
+            // select audio format parameters
+            AudioFormat af = new AudioFormat(44100, 8, 1, true, false);
+            DataLine.Info info = new DataLine.Info(SourceDataLine.class, af);
+            SourceDataLine line = (SourceDataLine) AudioSystem.getLine(info);
+
+            byte[] buffer = doubleCastByte(upscale(decimate(paDerivs, sampleRate/44100)));
+
+            for(int i = 0; i< 10; i++)
+            {
+                System.out.println(buffer[i]);
+            }
+            // generate some PCM data (a sine wave for simplicity)
+            /*byte[] buffer = new byte[64];
+            double step = Math.PI / buffer.length;
+            double angle = Math.PI * 2;
+            int i = buffer.length;
+            while (i > 0) {
+            double sine = Math.sin(angle);
+            int sample = (int) Math.round(sine * 32767);
+            buffer[--i] = (byte) (sample >> 8);
+            buffer[--i] = (byte) sample;
+            angle -= step;
+            }
+             */
+            // prepare audio output
+            line.open(af, 4096);
+            line.start();
+            // output wave form repeatedly
+            /*for (int n=0; n<500; ++n) {
+            line.write(buffer, 0, buffer.length);
+            }*/
+            line.write(buffer, 0, buffer.length);
+            // shut down audio
+            line.drain();
+            line.stop();
+            line.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e.getMessage(), e);
+        }
 
     }
 
@@ -145,8 +201,8 @@ public class IQCalc
 
     public static void main(String[] args)
     {
-        IQCalc calc = new IQCalc(1.8e6);
-        calc.readIQFile("capture2.bin");
+        IQCalc calc = new IQCalc(0.25e6);
+        calc.readIQFile("capture.bin");
         System.out.println(calc.getIntList().size());
         calc.demodulate();
 
@@ -168,7 +224,6 @@ public class IQCalc
             {
                 samples[i] = samples[i]*100;
             }
-            
 
             addWindowListener(new WindowAdapter()
                 {

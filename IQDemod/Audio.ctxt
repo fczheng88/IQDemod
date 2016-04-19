@@ -1,0 +1,10 @@
+#BlueJ class context
+comment0.params=data\ sampleRate\ signalBandwidth
+comment0.target=Audio(double[],\ float,\ double)
+comment1.params=doubles\ smoothing
+comment1.target=double[]\ smooth(double[],\ int)
+comment2.params=
+comment2.target=void\ play()
+comment3.params=
+comment3.target=void\ show()
+numComments=4

@@ -1,0 +1,12 @@
+#BlueJ class context
+comment0.params=u
+comment0.target=double[]\ unwrap(double[])
+comment1.params=doubles
+comment1.target=byte[]\ doubleCastByte(double[])
+comment2.params=arr\ factor
+comment2.target=int[]\ decimate(int[],\ double)
+comment3.params=arr\ factor
+comment3.target=double[]\ decimate(double[],\ double)
+comment4.params=doubles\ factor
+comment4.target=double[]\ upscale(double[],\ double)
+numComments=5

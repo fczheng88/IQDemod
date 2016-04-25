@@ -1,4 +1,4 @@
 #BlueJ class context
 comment0.params=MSPS\ signalBandwidth\ oIQ
-comment0.target=double[]\ FM(double,\ double,\ int[][])
+comment0.target=double[]\ FM(double,\ double,\ byte[][])
 numComments=1

@@ -14,19 +14,20 @@ import javax.sound.sampled.*;
  */
 public class IQIO
 {
-    public static int[][] readIQFile(String capture)
+    public static byte[][] readIQFile(String capture)
     {
         FileInputStream fileInputStream=null;
         File file = new File(capture);
         byte[] byteArr = new byte[(int) file.length()];
-        int[][] IQ = new int[2][];
+        byte[][] IQ = new byte[2][];
+        //int[][] IQ = new int[2][];
         try {
             //convert file into array of bytes
             fileInputStream = new FileInputStream(file);
             fileInputStream.read(byteArr);
             fileInputStream.close();
-
-            ArrayList<Integer> intList = new ArrayList<Integer>();
+            
+            /* ArrayList<Integer> intList = new ArrayList<Integer>();
             for (int i = 0; i < byteArr.length; i++) {
                 intList.add(Byte.toUnsignedInt(byteArr[i])-127);//unsigned to signed
             }
@@ -37,6 +38,14 @@ public class IQIO
                 int twoI = i+i;
                 IQ[0][i] = intList.get(twoI);
                 IQ[1][i] = intList.get(twoI + 1);
+            }*/
+            IQ[0] = new byte[byteArr.length/2];
+            IQ[1] = new byte[IQ[0].length];
+            for(int i = 0; i<IQ[0].length; i++)
+            {
+                int twoI = i+i;
+                IQ[0][i] = byteArr[twoI];
+                IQ[1][i] = byteArr[twoI+1];
             }
         }catch(Exception e){
             e.printStackTrace();

@@ -56,7 +56,15 @@ public class DataOps
         }
         return downSampledArr;
     }
-    
+    public static byte[] decimate(byte[] arr, double factor)
+    {
+        byte[] downSampledArr = new byte[(int)(arr.length/factor)];
+        for(int i = 0; i < downSampledArr.length; i++)
+        {
+             downSampledArr[i] = arr[(int)(i*factor)];
+        }
+        return downSampledArr;
+    }
     public static double[] upscale(double[] doubles, double factor)
     {
         double[] upscaled = new double[doubles.length];

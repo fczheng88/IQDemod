@@ -14,9 +14,9 @@ import javax.sound.sampled.*;
  */
 public class IQDemod
 {
-    public static  double[] FM(double MSPS, double signalBandwidth, int[][] oIQ)
+    public static  double[] FM(double MSPS, double signalBandwidth, byte[][] oIQ)
     {
-        int[][] IQ = new int[2][];
+        byte[][] IQ = new byte[2][];
         
         IQ[0] = DataOps.decimate(oIQ[0], MSPS/signalBandwidth);
         IQ[1] = DataOps.decimate(oIQ[1], MSPS/signalBandwidth);
@@ -25,7 +25,7 @@ public class IQDemod
         //calculate each phase angle
         for(int i = 0; i < phaseAngles.length; i++)
         {
-            phaseAngles[i] = Math.atan2(IQ[0][i], IQ[1][i]);
+            phaseAngles[i] = Math.atan2(Byte.toUnsignedInt(IQ[0][i])-127, Byte.toUnsignedInt(IQ[1][i])-127);
         }
 
         //Matlab "unwrap" corrects phase angles

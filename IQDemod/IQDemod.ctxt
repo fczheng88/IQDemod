@@ -1,4 +1,14 @@
 #BlueJ class context
-comment0.params=MSPS\ signalBandwidth\ oIQ
-comment0.target=double[]\ FM(double,\ double,\ byte[][])
-numComments=1
+comment0.params=MSPS\ signalBandwidth\ oIQ\ sampleRate
+comment0.target=byte[]\ FM(double,\ double,\ byte[][],\ float)
+comment1.params=arr\ factor
+comment1.target=byte[]\ decimate(byte[],\ double)
+comment2.params=arr\ factor
+comment2.target=double[]\ decimate(double[],\ double)
+comment3.params=u
+comment3.target=double[]\ unwrap(double[])
+comment4.params=doubles\ factor
+comment4.target=double[]\ upscale(double[],\ double)
+comment5.params=doubles
+comment5.target=byte[]\ doubleCastByte(double[])
+numComments=6

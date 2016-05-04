@@ -18,7 +18,9 @@ public class DemodRunner
         float audioSampleRate = 44100F;//s.nextFloat(); //
 
         byte[][] IQ = IQIO.readIQFile(fileName);
-        double[] audioData = IQDemod.FM(inputBandwidth, signalBandwidth, IQ);
-        (new Audio(audioData, audioSampleRate, signalBandwidth)).show();
+        
+        byte[] audioData = IQDemod.FM(inputBandwidth, signalBandwidth, IQ, audioSampleRate);
+        
+        (new Audio(audioData, audioSampleRate)).show();
     }
 }

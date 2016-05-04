@@ -14,28 +14,26 @@ import javax.sound.sampled.*;
  */
 public class Audio
 {
-    // instance variables - replace the example below with your own
-    private double[] data;
     private float sampleRate;
     private byte[] buffer;
 
-    public Audio(double[] data, float sampleRate, double signalBandwidth)
+    public Audio(byte[] data, float audioSampleRate)
     {
-        this.data = data;
-        this.sampleRate = sampleRate;
-        buffer = DataOps.doubleCastByte(DataOps.upscale(smooth(DataOps.decimate(data, signalBandwidth/sampleRate), 20), 64));
+        sampleRate = audioSampleRate;
+        
+        buffer = data;//smooth(data, 64);//DataOps.doubleCastByte(DataOps.upscale(smooth(DataOps.decimate(data, signalBandwidth/sampleRate), 20), 64));
     }
 
-        public double[] smooth(double[] doubles, int smoothing ){
-        double value = doubles[0]; // start with the first input
-        for (int i=1 ; i<doubles.length; i++){
-            double currentValue = doubles[i];
+    public byte[] smooth(byte[] bytes, int smoothing ){
+        byte value = bytes[0]; // start with the first input
+        for (int i=1 ; i<bytes.length; i++){
+            byte currentValue = bytes[i];
             value += (currentValue - value) / smoothing;
-            doubles[i] = value;
+            bytes[i] = value;
         }
-        return doubles;
+        return bytes;
     }
-    
+
     public void play()
     {
         try {
@@ -75,10 +73,10 @@ public class Audio
         {
             frames++;
             offsets++;
-            double[] samples = data;
+            double[] samples = new double[buffer.length];
             for(int i = 0; i < samples.length; i++)
             {
-                samples[i] = samples[i]*100;
+                samples[i] = (double)(Byte.toUnsignedInt(buffer[i])-128);
             }
 
             addWindowListener(new WindowAdapter()

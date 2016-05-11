@@ -1,14 +1,20 @@
 #BlueJ class context
 comment0.params=MSPS\ signalBandwidth\ oIQ\ sampleRate
 comment0.target=byte[]\ FM(double,\ double,\ byte[][],\ float)
+comment0.text=\r\n\ Demodulates\ IQ\ data\ originally\ modulated\ using\ FM\r\n\ \r\n\ @param\ MSPS\ The\ samples\ per\ second\ of\ the\ original\ signal\r\n\ @param\ signalBandwidth\ The\ bandwidth\ of\ the\ actual\ signal\r\n\ @param\ oIQ\ The\ IQ\ data\ as\ represented\ by\ a\ 2D\ byte\ array\r\n\ @param\ sampleRate\ The\ sampleRate\ of\ the\ audio\ to\ be\ played.\ Used\ to\ specify\ proper\ sampleRate\ of\ returned\ byte[]\r\n\ \r\n\ @return\ A\ byte[]\ of\ raw\ audio\ data\ with\ the\ sampleRate\ specified.\r\n
 comment1.params=arr\ factor
 comment1.target=byte[]\ decimate(byte[],\ double)
+comment1.text=\r\n\ Decimate\ decimates\ an\ array\ by\ a\ factor.\ Modeled\ off\ of\ Matlab's\ decimate\ function.\r\n\ @param\ arr\ The\ array\ to\ be\ decimated\r\n\ @param\ factor\ The\ factor\ of\ decimation\r\n\ \r\n\ @return\ A\ decimated\ array\r\n
 comment2.params=arr\ factor
 comment2.target=double[]\ decimate(double[],\ double)
+comment2.text=\r\n\ Decimate\ decimates\ an\ array\ by\ a\ factor.\ Modeled\ off\ of\ Matlab's\ decimate\ function.\r\n\ \r\n\ @param\ arr\ The\ array\ to\ be\ decimated\r\n\ @param\ factor\ The\ factor\ of\ decimation\r\n\ \r\n\ @return\ A\ decimated\ array\r\n
 comment3.params=u
 comment3.target=double[]\ unwrap(double[])
+comment3.text=\r\n\ Unwraps\ the\ data.\ Ensures\ that\ all\ data\ is\ no\ more\ than\ PI\ away\ from\ the\ previous\ and\ next\ data\ points\r\n\ and\ adjusts\ the\ data\ accordingly\r\n\ \r\n\ @param\ u\ The\ array\ for\ unwrapping\r\n\ \r\n\ @return\ The\ unwrapped\ array\r\n
 comment4.params=doubles\ factor
 comment4.target=double[]\ upscale(double[],\ double)
+comment4.text=\r\n\ Upscales\ the\ data\ in\ an\ array\ by\ a\ specified\ factor\r\n\ \r\n\ @param\ doubles\ The\ array\ of\ doubles\ to\ be\ upscaled\r\n\ @param\ factor\ The\ factor\ at\ which\ the\ data\ should\ be\ upscaled\r\n\ \r\n\ @return\ The\ upscaled\ array\r\n
 comment5.params=doubles
 comment5.target=byte[]\ doubleCastByte(double[])
+comment5.text=\r\n\ DoubleCastByte\ dasts\ a\ double\ array\ to\ a\ byte\ array\ element\ by\ element\r\n\ @param\ doubles\ The\ double\ array\r\n\ @return\ The\ byte\ array\ created\ based\ on\ the\ double\ array\r\n
 numComments=6

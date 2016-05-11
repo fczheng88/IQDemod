@@ -7,13 +7,23 @@ import java.awt.*;
 import java.util.*;
 import javax.sound.sampled.*;
 /**
- * Takes IQ samples and turns them into raw audio streams
+ * Demodulates a signal based on a stream of IQ data and returns a raw audio stream
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Felix Zheng
+ * @version Final
  */
 public class IQDemod
 {
+    /**
+     * Demodulates IQ data originally modulated using FM
+     * 
+     * @param MSPS The samples per second of the original signal
+     * @param signalBandwidth The bandwidth of the actual signal
+     * @param oIQ The IQ data as represented by a 2D byte array
+     * @param sampleRate The sampleRate of the audio to be played. Used to specify proper sampleRate of returned byte[]
+     * 
+     * @return A byte[] of raw audio data with the sampleRate specified.
+     */
     public static  byte[] FM(double MSPS, double signalBandwidth, byte[][] oIQ, float sampleRate)
     {
         byte[][] IQ = new byte[2][];
@@ -36,15 +46,22 @@ public class IQDemod
         {
             paDerivs[i-1]=phaseAngles[i]-phaseAngles[i-1];
         }
-        phaseAngles = null; System.gc(); //collect that garbage!
+        phaseAngles = null; System.gc(); //garbage collect
         
         double[] audioDoubles = decimate(paDerivs, signalBandwidth/sampleRate);
-        paDerivs = null; System.gc(); //collect that garbage!
+        paDerivs = null; System.gc(); //garbage collect
         
         audioDoubles = upscale(audioDoubles, 20);
         
         return doubleCastByte(audioDoubles);
     }    
+    /**
+     * Decimate decimates an array by a factor. Modeled off of Matlab's decimate function.
+     * @param arr The array to be decimated
+     * @param factor The factor of decimation
+     * 
+     * @return A decimated array
+     */
     private static byte[] decimate(byte[] arr, double factor)
     {
         byte[] downSampledArr = new byte[(int)(arr.length/factor)];
@@ -54,6 +71,14 @@ public class IQDemod
         }
         return downSampledArr;
     }
+    /**
+     * Decimate decimates an array by a factor. Modeled off of Matlab's decimate function.
+     * 
+     * @param arr The array to be decimated
+     * @param factor The factor of decimation
+     * 
+     * @return A decimated array
+     */
     private static double[] decimate(double[] arr, double factor)
     {
         double[] downSampledArr = new double[(int)(arr.length/factor)];
@@ -63,6 +88,14 @@ public class IQDemod
         }
         return downSampledArr;
     }
+    /**
+     * Unwraps the data. Ensures that all data is no more than PI away from the previous and next data points
+     * and adjusts the data accordingly
+     * 
+     * @param u The array for unwrapping
+     * 
+     * @return The unwrapped array
+     */
     private static double[] unwrap(double[] u)
     {
         int  k=0;               // initialize k to 0
@@ -85,6 +118,14 @@ public class IQDemod
         yout[yout.length-1]=u[u.length-1]+(2*Math.PI*k); // add 2*pi*k to the last element of the input
         return yout;
     }
+    /**
+     * Upscales the data in an array by a specified factor
+     * 
+     * @param doubles The array of doubles to be upscaled
+     * @param factor The factor at which the data should be upscaled
+     * 
+     * @return The upscaled array
+     */
     private static double[] upscale(double[] doubles, double factor)
     {
         double[] upscaled = new double[doubles.length];
@@ -94,6 +135,11 @@ public class IQDemod
         }
         return upscaled;
     }
+    /**
+     * DoubleCastByte dasts a double array to a byte array element by element
+     * @param doubles The double array
+     * @return The byte array created based on the double array
+     */
     private static byte[] doubleCastByte(double[] doubles)
     {
         byte[] bytes = new byte[doubles.length];

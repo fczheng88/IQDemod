@@ -9,21 +9,35 @@ import javax.sound.sampled.*;
 /**
  * Plays audio from raw audio data
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Felix Zheng 
+ * @version Final
  */
 public class Audio
 {
     private float sampleRate;
     private byte[] buffer;
 
+    /**
+     * Constructor; initializes instance variables
+     * 
+     * @param data Raw audio data from IQ file
+     * @param audioSampleRate sample rate of sound output
+     */
     public Audio(byte[] data, float audioSampleRate)
     {
         sampleRate = audioSampleRate;
-        
-        buffer = data;//smooth(data, 64);//DataOps.doubleCastByte(DataOps.upscale(smooth(DataOps.decimate(data, signalBandwidth/sampleRate), 20), 64));
+
+        buffer = smooth(data, 10);
     }
 
+    /**
+     * 'Smooths' the audio. Attempts to reduce some high frequency noise
+     * 
+     * @param bytes Raw audio data
+     * @param smoothing The factor of smoothing. 1 is equivalent to no smoothing
+     * 
+     * @return Smoothed audio data
+     */
     public byte[] smooth(byte[] bytes, int smoothing ){
         byte value = bytes[0]; // start with the first input
         for (int i=1 ; i<bytes.length; i++){
@@ -34,6 +48,11 @@ public class Audio
         return bytes;
     }
 
+    /**
+     * Plays the audio. Creates an audio format based on sample rate and some other data and plays the raw audio data.
+     * Most of code taken from a post on StackOverflow (http://stackoverflow.com/questions/32873596) and modified for
+     * use in this application.
+     */
     public void play()
     {
         try {
@@ -57,26 +76,35 @@ public class Audio
 
     }
 
+    /**
+     * Shows a SoundClipFrame
+     */
     public void show()
     {
         JFrame frame = new SoundClipFrame();
         frame.setVisible(true);
     }
-
-    private static int frames;
-    private static int offsets;
+    /**
+     * This class creates and displays a window with a graph that represents the sound data.
+     * It also contains a play button to allow the audio data to be played.
+     * Subclass taken from the SoundClip class of Unit4ArraysArrayLists and modified.
+     * 
+     * @author Felix Zheng
+     */
     class SoundClipFrame extends JFrame
     {
+        private int frames;
+        private int offsets;
         private int[] samples; 
 
         public SoundClipFrame()
         {
             frames++;
             offsets++;
-            double[] samples = new double[buffer.length];
+            int[] samples = new int[buffer.length];
             for(int i = 0; i < samples.length; i++)
             {
-                samples[i] = (double)(Byte.toUnsignedInt(buffer[i])-128);
+                samples[i] = (Byte.toUnsignedInt(buffer[i])-128); //copies the byte[] as an int[]
             }
 
             addWindowListener(new WindowAdapter()
@@ -100,16 +128,16 @@ public class Audio
                     {
                         int increment = samples.length / getWidth();
 
-                        final int LARGEST = 250;
+                        final int LARGEST = 130;
                         int x = 0;
                         for (int i = 0; i < samples.length; i = i + increment)
                         {
-                            int value = (int) samples[i];
+                            int value = samples[i];
                             value = Math.min(LARGEST, value);
                             value = Math.max(-LARGEST, value);
 
                             int height = getHeight() / 2;
-                            int y = height - (int)samples[i] * height / LARGEST;
+                            int y = height - samples[i] * height / LARGEST;
                             graph.drawLine(x, y, x, height);
                             x++;
                         }

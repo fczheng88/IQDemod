@@ -1,4 +1,5 @@
 #BlueJ class context
 comment0.params=capture
 comment0.target=byte[][]\ readIQFile(java.lang.String)
+comment0.text=\r\n\ Reads\ a\ file\ and\ creates\ a\ 2D\ byte\ array\ representing\ the\ IQ\ data\r\n\ \r\n\ @param\ capture\ The\ path\ of\ the\ IQ\ data\ file.\r\n
 numComments=1

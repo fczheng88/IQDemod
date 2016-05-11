@@ -9,36 +9,29 @@ import javax.sound.sampled.*;
 /**
  * This class is for dealing with raw IQ data from files.
  * 
- * @author (your name) 
- * @version (a version number or a date)
+ * @author Felix Zheng
+ * @version Final
  */
 public class IQIO
 {
+    /**
+     * Reads a file and creates a 2D byte array representing the IQ data
+     * 
+     * @param capture The path of the IQ data file.
+     */
     public static byte[][] readIQFile(String capture)
     {
-        FileInputStream fileInputStream=null;
+        FileInputStream fileInputStream=null; 
         File file = new File(capture);
         byte[] byteArr = new byte[(int) file.length()];
         byte[][] IQ = new byte[2][];
-        //int[][] IQ = new int[2][];
         try {
             //convert file into array of bytes
             fileInputStream = new FileInputStream(file);
-            fileInputStream.read(byteArr);
+            fileInputStream.read(byteArr); //read data into a byte[]
             fileInputStream.close();
             
-            /* ArrayList<Integer> intList = new ArrayList<Integer>();
-            for (int i = 0; i < byteArr.length; i++) {
-                intList.add(Byte.toUnsignedInt(byteArr[i])-127);//unsigned to signed
-            }
-            IQ[0] = new int[intList.size()/2];
-            IQ[1] = new int[IQ[0].length];
-            for(int i = 0; i < IQ[0].length; i++)
-            {
-                int twoI = i+i;
-                IQ[0][i] = intList.get(twoI);
-                IQ[1][i] = intList.get(twoI + 1);
-            }*/
+            //take data from byteArray and sorts it into the I and Q components.
             IQ[0] = new byte[byteArr.length/2];
             IQ[1] = new byte[IQ[0].length];
             for(int i = 0; i<IQ[0].length; i++)
